@@ -1,0 +1,174 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Button name="TableEntry" hidden="true" virtual="true">
+        <Layers>
+            <Layer>
+                <FontString name="$parentName" justifyH="LEFT" inherits="GameFontNormalLarge">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                getglobal(self:GetName().."BG"):Hide();
+            </OnLoad>
+            <OnEnter>
+                Entered(self);
+            </OnEnter>
+            <OnLeave>
+                if not IsSelected(self) then
+                    Left(self);
+                end
+            </OnLeave>
+            <OnClick>
+                SelectEntry(self);
+            </OnClick>
+        </Scripts>
+        <NormalTexture name="$parentBG">
+            <Color r="0.7" g="0.7" b="0.5" a="0.25"/>
+        </NormalTexture>
+    </Button>
+
+
+  <Button name="BrowserEntry" virtual="true" inherits="UIPanelButtonTemplate">
+    <Size>
+        <RelDimension x="0.06" y="0.02"/>
+    </Size>
+    <Anchors>
+        <Anchor point="CENTER"/>
+    </Anchors>
+</Button>
+  <Frame name="MyModMainFrame" parent="UIParent" movable="true" enableMouse="true">
+    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true"
+    edgeFile="Interface\DialogFrame\UI-DialogBox-Border">
+        <TileSize>
+            <AbsValue val="32"/>
+        </TileSize>
+        <EdgeSize>
+            <AbsValue val="32"/>
+        </EdgeSize>
+        <BackgroundInsets>
+            <AbsInset left="11" right="12" top="12" bottom="11"/>
+        </BackgroundInsets>
+    </Backdrop>
+    <Size>
+        <RelDimension x="0.4" y="0.3"/>
+    </Size>
+    <Anchors>
+        <Anchor point="CENTER" y="-50"/>
+    </Anchors>
+    <Scripts>
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+        </OnLoad>
+        <OnDragStart>
+            self:StartMoving();
+        </OnDragStart>
+        <OnDragStop>
+            self:StopMovingOrSizing();
+        </OnDragStop>
+    </Scripts>
+    <Frames>
+        <!-- Party picker start -->
+        <Frame name="TableBrowser">
+            <Size>
+                <RelDimension x="0.15" y="0.25"/>
+            </Size>
+            <Anchors>
+                <Anchor point="TOP" y="-20"/>
+                <Anchor point="LEFT" x="20"/>
+            </Anchors>
+            <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                <EdgeSize>
+                    <AbsValue val="16"/>
+                </EdgeSize>
+                <TileSize>
+                    <AbsValue val="16"/>
+                </TileSize>
+            </Backdrop>
+        </Frame>
+        <!-- Party picker ends -->
+        <!-- Black list start -->
+        <Frame name="BlackListBrowser" parent="MyModMainFrame">
+            <Size>
+                <RelDimension x="0.15" y="0.25"/>
+            </Size>
+            <Anchors>
+                <Anchor point="TOP" y="-20"/>
+                <Anchor point="RIGHT" x="-20"/>
+            </Anchors>
+            <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                <EdgeSize>
+                    <AbsValue val="16"/>
+                </EdgeSize>
+                <TileSize>
+                    <AbsValue val="16"/>
+                </TileSize>
+            </Backdrop>
+        </Frame>
+        <!-- Black list ends -->
+
+        <!-- Add Button Start -->
+        <Button name="AddButton" text="Add" inherits="UIPanelButtonTemplate" state="disabled">
+            <Size>
+                <RelDimension x="0.06" y="0.02"/>
+            </Size>
+            <Anchors>
+                <Anchor point="TOP" y="-100"/>
+            </Anchors>
+            <Scripts>
+                <OnLoad>
+                    self:RegisterForClicks("LeftButtonUp");
+                    self:Disable();
+                </OnLoad>
+                <OnClick>
+                   banPlayer();
+                </OnClick>
+            </Scripts>
+        </Button>
+        <!-- Add Button End -->
+         <Button name="RemoveButton" text="Remove" inherits="UIPanelButtonTemplate">
+            <Size>
+                <RelDimension x="0.06" y="0.02"/>
+            </Size>
+            <Anchors>
+                <Anchor point="TOP" y="-150"/>
+            </Anchors>
+            <Scripts>
+                <OnLoad>
+                    self:RegisterForClicks("LeftButtonUp");
+                    self:Disable();
+                </OnLoad>
+                <OnClick>
+                    <!-- MyModMainFrame:Hide(); -->
+                </OnClick>
+            </Scripts>
+        </Button>
+        <Button name="$customName" text="Custom" inherits="BrowserEntry" id="1">
+            <Anchors>
+                <Anchor point="TOP" y="-200"/>
+            </Anchors>
+        </Button>
+        <!-- Close Button Start -->
+        <Button name="$parentTestButton" text="Close Window" inherits="UIPanelButtonTemplate">
+            <Size>
+                <RelDimension x="0.1" y="0.02"/>
+            </Size>
+            <Anchors>
+                <Anchor point="BOTTOM" y="20"/>
+            </Anchors>
+            <Scripts>
+                <OnLoad>
+                    self:RegisterForClicks("LeftButtonUp");
+                </OnLoad>
+                <OnClick>
+                    MyModMainFrame:Hide();
+                </OnClick>
+            </Scripts>
+        </Button>
+        <!-- Close Button End -->
+    </Frames>
+  </Frame>
+</Ui>

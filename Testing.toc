@@ -1,0 +1,10 @@
+## Interface: 80300
+## Title: Testing addon
+## Notes: 1ST ADDON
+## Author: Me
+## Version: 0.0.1
+## SavedVariables: Mine
+
+interface.xml
+TableBrowser.lua
+Testing.lua
