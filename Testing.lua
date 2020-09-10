@@ -4,7 +4,6 @@ SlashCmdList.BAN = function()
     MyModMainFrame:Show();
 end
 
-
 local function OnEvent(self, event, arg1, arg2 )
     -- if(arg1 == '!sync') 
     --     print(UnitName('player') .. ' tried to sync ');
