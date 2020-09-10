@@ -63,14 +63,14 @@ banPlayer = function()
 end
 
 unBanPlayer = function()
-    local entry = entries[selected];
+    local entry = banned[selected];
     if entry == nil then
         return
     end
-    entries[selected] = nil;
-    banned[selected] = entry;
+    banned[selected] = nil;
+    entries[selected] = entry;
     entry:Hide();
-    entry:SetParent(BlackListBrowser);
+    entry:SetParent(TableBrowser);
     entry:SetPoint("TOP");
     entry:Show();
     UpdateTable();

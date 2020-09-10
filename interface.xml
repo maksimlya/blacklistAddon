@@ -142,7 +142,7 @@
                     self:Disable();
                 </OnLoad>
                 <OnClick>
-                    <!-- MyModMainFrame:Hide(); -->
+                    unBanPlayer();
                 </OnClick>
             </Scripts>
         </Button>
