@@ -14,13 +14,13 @@ local refreshTable = function()
      end
      local idx = 0;
      for i,entry in pairs(entries) do
-        entry:SetPoint("TOP",0,-idx*50);
+        entry:SetPoint("TOP",0,-idx* Constants.UI.TableEntry.Height);
         entry:Show();
         idx = idx + 1;
      end
      idx = 0;
      for i,entry in pairs(banned) do
-        entry:SetPoint("TOP",0,-idx*50);
+        entry:SetPoint("TOP",0,-idx* Constants.UI.TableEntry.Height);
         entry:Show();
         idx = idx + 1;
      end
@@ -33,7 +33,7 @@ addPlayer = function(who)
     local guid = UnitGUID(who);
     local locClass, engClass, locRace, engRace, gender, name, server = GetPlayerInfoByGUID(guid);
         
-    if server ~= nil then
+    if server == "" then
         server = GetRealmName();
     end
 
@@ -90,7 +90,7 @@ end
 
 
 function SelectEntry(entry)
-    getglobal(entry:GetName().."BG"):SetColorTexture(0.9,0.9,0.9,0.55);
+    getglobal(entry:GetName().."BG"):SetColorTexture(1,1,1,0.25);
     getglobal(entry:GetName().."BG"):Show();
 
     if entries[selected] then
@@ -138,7 +138,7 @@ end
 
 function Entered(entry)
     if selected ~= entry:GetID() then
-        getglobal(entry:GetName().."BG"):SetColorTexture(0.7,0.7,0.5,0.35);
+        getglobal(entry:GetName().."BG"):SetColorTexture(0.7,0.7,0.5,0.15);
     end
     getglobal(entry:GetName().."BG"):Show();
 end
@@ -147,6 +147,8 @@ function Left(entry)
 end
 
 addPlayer('player');
+addPlayer('party1');
+addPlayer('party2');
 
 -- addCandidate('Joker');
 -- addCandidate('Momo');

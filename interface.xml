@@ -4,7 +4,8 @@
     <Button name="TableEntry" hidden="true" virtual="true">
         <Layers>
             <Layer>
-                <FontString name="$parentName" justifyH="LEFT" inherits="GameFontRed">
+                <FontString name="$parentName" justifyH="LEFT" inherits="GameFontNormalLarge">
+                <Size x="200" y="400" />
                     <Anchors>
                         <Anchor point="CENTER"/>
                     </Anchors>

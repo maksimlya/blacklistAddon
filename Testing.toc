@@ -5,6 +5,7 @@
 ## Version: 0.0.1
 ## SavedVariables: Mine
 
+utils\Constants.lua
 interface.xml
 TableBrowser.lua
 Testing.lua
