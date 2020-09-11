@@ -3,7 +3,6 @@ local offset = -5;
 local id = 1;
 entries = {};
 banned = {};
-candidates = {};
 local amountOfCandidates = 1;
 
 local refreshTable = function()
@@ -28,21 +27,22 @@ local refreshTable = function()
 
 end
 
-local addCandidate = function(name)
-    candidates[amountOfCandidates] = name;
-    amountOfCandidates = amountOfCandidates + 1;
-end
 
-addPlayer = function(name)
-    local entry = CreateFrame("Button", name..id, TableBrowser, "TableEntry");
-    entry:SetID(id);
-    entry:SetPoint("TOP",0,-(id-1)*50);
-    entry:SetWidth(TableBrowser:GetWidth()-8);
-    entry:SetHeight(50);
-    entry:SetText(name);
-    getglobal(name..id.."Name"):SetText(name);
-    entry:Show();
-    entries[id] = entry;
+
+addPlayer = function(who)
+    local guid = UnitGUID(who);
+    local locClass, engClass, locRace, engRace, gender, name, server = GetPlayerInfoByGUID(guid);
+        
+    if server ~= nil then
+        server = GetRealmName();
+    end
+
+    local player = InitPlayer(id, guid, name, locClass, server);
+
+    print(player);
+
+    player.Update(TableBrowser, id);
+    entries[id] = player;
     id = id + 1;
 end
 
@@ -69,7 +69,9 @@ unBanPlayer = function()
     end
     banned[selected] = nil;
     entries[selected] = entry;
+    selected = -1;
     entry:Hide();
+    getglobal(entry:GetName().."BG"):Hide();
     entry:SetParent(TableBrowser);
     entry:SetPoint("TOP");
     entry:Show();
@@ -144,11 +146,13 @@ function Left(entry)
     getglobal(entry:GetName().."BG"):Hide();
 end
 
-addCandidate('Joker');
-addCandidate('Momo');
-addCandidate('Toto');
-addCandidate('Soso');
+addPlayer('player');
 
-fillTable();
+-- addCandidate('Joker');
+-- addCandidate('Momo');
+-- addCandidate('Toto');
+-- addCandidate('Soso');
+
+-- fillTable();
 
 

@@ -1,9 +1,10 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+    <Script file="models/Player.lua"/>
     <Button name="TableEntry" hidden="true" virtual="true">
         <Layers>
             <Layer>
-                <FontString name="$parentName" justifyH="LEFT" inherits="GameFontNormalLarge">
+                <FontString name="$parentName" justifyH="LEFT" inherits="GameFontRed">
                     <Anchors>
                         <Anchor point="CENTER"/>
                     </Anchors>
@@ -125,6 +126,7 @@
                 </OnLoad>
                 <OnClick>
                    banPlayer();
+                   self:Disable();
                 </OnClick>
             </Scripts>
         </Button>
@@ -143,6 +145,7 @@
                 </OnLoad>
                 <OnClick>
                     unBanPlayer();
+                    self:Disable();
                 </OnClick>
             </Scripts>
         </Button>
@@ -171,4 +174,5 @@
         <!-- Close Button End -->
     </Frames>
   </Frame>
+  
 </Ui>
