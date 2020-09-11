@@ -39,8 +39,6 @@ addPlayer = function(who)
 
     local player = InitPlayer(id, guid, name, locClass, server);
 
-    print(player);
-
     player.Update(TableBrowser, id);
     entries[id] = player;
     id = id + 1;
