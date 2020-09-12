@@ -4,7 +4,7 @@ entries = {};
 banned = {};
 globalDatabase = {};
 
-local refreshTable = function()
+local UpdateTables = function()
      local idx = 1;
      for i,entry in pairs(entries) do
         entry.Update(TableBrowser, idx);
@@ -17,7 +17,7 @@ local refreshTable = function()
      end
 end
 
-createPlayer = function(guid)
+local createPlayer = function(guid)
     local locClass, engClass, locRace, engRace, gender, name, server = GetPlayerInfoByGUID(guid);
         
     if server == "" then
@@ -32,7 +32,7 @@ createPlayer = function(guid)
 end
 
 
-addPlayer = function(player, where)
+local addPlayer = function(player, where)
 
     if where == Constants.Models.TableBrowser then
         entries[player.id] = player;
@@ -70,16 +70,6 @@ unBanPlayer = function()
     UpdateTables();
 end
 
-local fillTable = function()
-    for i,name in ipairs(candidates) do
-        addPlayer(name);
-    end
-end
-
-function UpdateTables()
-    refreshTable();
-end
-
 
 function SelectEntry(entry)
     entry.bg:SetColorTexture(1,1,1,0.25);
@@ -105,6 +95,7 @@ function SelectEntry(entry)
     end
 end
 
+
 function IsSelected(entry)
     if selected == entry.id then 
         return true 
@@ -113,6 +104,7 @@ function IsSelected(entry)
     end
 end
 
+-- Background flash on mouse over.
 function Entered(entry)
     if selected ~= entry.id then
         entry.bg:SetColorTexture(0.7,0.7,0.5,0.15);
@@ -123,7 +115,8 @@ function Left(entry)
    entry.bg:Hide();
 end
 
-function getPartyMembers()
+-- Returns GUIDs of party members.
+local getPartyMembers = function()
     local existingMembers = {};
     for i=1,4,1 do
         if(UnitInParty('party'..i)) then
@@ -133,6 +126,7 @@ function getPartyMembers()
     return existingMembers;
 end
 
+-- Wipe tables -- TODO (redunant? performance hit?)
 local clearTables = function() 
     for i,entry in pairs(entries) do
         entries[i] = nil;
@@ -143,13 +137,23 @@ local clearTables = function()
      id = 1;
 end
 
-function initTables()
+local initTables = function()
 
-    
+    -- Add myself 
+    local myGuid = UnitGUID('player');
+    if globalDatabase[myGuid] == nil then
+        createPlayer(myGuid);
+    end
+    if globalDatabase[myGuid].banned then
+        addPlayer(globalDatabase[myGuid], Constants.Models.BlackListBrowser);
+    else
+        addPlayer(globalDatabase[myGuid], Constants.Models.TableBrowser);
+    end
+
+    -- Add party members
     local currentPartyMembers = getPartyMembers();
     
     for i, guid in pairs(currentPartyMembers) do
-
         if globalDatabase[guid] == nil then
             createPlayer(guid);
         end
@@ -161,19 +165,9 @@ function initTables()
     end
 end
 
+
 function init() 
     clearTables();
-
-    local myGuid = UnitGUID('player');
-    if globalDatabase[myGuid] == nil then
-        createPlayer(myGuid);
-    end
-    if globalDatabase[myGuid].banned then
-        addPlayer(globalDatabase[myGuid], Constants.Models.BlackListBrowser);
-    else
-        addPlayer(globalDatabase[myGuid], Constants.Models.TableBrowser);
-    end
-    
     initTables();
 end
 
