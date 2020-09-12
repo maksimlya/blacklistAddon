@@ -65,6 +65,9 @@
         <OnLoad>
             self:RegisterForDrag("LeftButton");
         </OnLoad>
+        <OnShow>
+            init();
+        </OnShow>
         <OnDragStart>
             self:StartMoving();
         </OnDragStart>
@@ -166,7 +169,7 @@
             <Scripts>
                 <OnLoad>
                     self:RegisterForClicks("LeftButtonUp");
-                </OnLoad>
+                </OnLoad> 
                 <OnClick>
                     MyModMainFrame:Hide();
                 </OnClick>

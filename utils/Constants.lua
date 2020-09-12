@@ -22,5 +22,9 @@ Constants = {
             Height = 40,
             Width = (UIParent:GetWidth() * 0.15) - 8
         }
+    },
+    Models = {
+        TableBrowser = 'TableBrowser',
+        BlackListBrowser = 'BlackListBrowser'
     }
 }
