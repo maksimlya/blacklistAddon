@@ -129,12 +129,13 @@ end
 -- Wipe tables -- TODO (redunant? performance hit?)
 local clearTables = function() 
     for i,entry in pairs(entries) do
+        entries[i]:Hide();
         entries[i] = nil;
      end
      for i,entry in pairs(banned) do
+        banned[i]:Hide();
         banned[i] = nil;
      end
-     id = 1;
 end
 
 local initTables = function()

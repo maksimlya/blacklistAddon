@@ -5,6 +5,11 @@ SlashCmdList.BAN = function()
 end
 
 local function OnEvent(self, event, arg1, arg2 )
+
+    if event == "GROUP_ROSTER_UPDATE" then
+        init();
+    end
+    print(event);
     -- if(arg1 == '!sync') 
     --     print(UnitName('player') .. ' tried to sync ');
     -- end
@@ -18,5 +23,6 @@ end
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("CHAT_MSG_SAY")
+f:RegisterEvent("GROUP_ROSTER_UPDATE")
 f:SetScript("OnEvent", OnEvent)
 
