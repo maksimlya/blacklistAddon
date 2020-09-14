@@ -1,8 +1,8 @@
 local selected = -1;
 local id = 1;
+allPlayers = {};
 entries = {};
 banned = {};
-globalDatabase = {};
 
 local UpdateTables = function()
      local idx = 1;
@@ -24,11 +24,13 @@ local createPlayer = function(guid)
         server = GetRealmName();
     end
 
-    local player = InitPlayer(id, guid, name, locClass, server);
+    local mock = InitPlayer(id, guid, name, locClass, server);
+    local player = UpdatePlayerToModel(mock);
 
     id = id + 1;
 
-    globalDatabase[guid] = player;
+    globalDatabase[guid] = mock;
+    allPlayers[guid] = player;
 end
 
 
@@ -49,7 +51,7 @@ banPlayer = function()
     if entry == nil then
         return
     end
-    globalDatabase[entries[selected].guid].banned = true;
+    allPlayers[entries[selected].guid].Edit('banned', true);
     entries[selected] = nil;
     banned[selected] = entry;
     selected = -1;
@@ -62,7 +64,7 @@ unBanPlayer = function()
     if entry == nil then
         return
     end
-    globalDatabase[banned[selected].guid].banned = false;
+    allPlayers[banned[selected].guid].Edit('banned', false);
     banned[selected] = nil;
     entries[selected] = entry;
     selected = -1;
@@ -144,11 +146,14 @@ local initTables = function()
     local myGuid = UnitGUID('player');
     if globalDatabase[myGuid] == nil then
         createPlayer(myGuid);
+    else if allPlayers[myGuid] == nil then
+            allPlayers[myGuid] = UpdatePlayerToModel(globalDatabase[myGuid])
+        end
     end
-    if globalDatabase[myGuid].banned then
-        addPlayer(globalDatabase[myGuid], Constants.Models.BlackListBrowser);
+    if allPlayers[myGuid].banned then
+        addPlayer(allPlayers[myGuid], Constants.Models.BlackListBrowser);
     else
-        addPlayer(globalDatabase[myGuid], Constants.Models.TableBrowser);
+        addPlayer(allPlayers[myGuid], Constants.Models.TableBrowser);
     end
 
     -- Add party members
@@ -157,11 +162,14 @@ local initTables = function()
     for i, guid in pairs(currentPartyMembers) do
         if globalDatabase[guid] == nil then
             createPlayer(guid);
+            else if allPlayers[guid] == nil then
+                allPlayers[guid] = UpdatePlayerToModel(globalDatabase[guid])
+            end
         end
-        if globalDatabase[guid].banned then
-            addPlayer(globalDatabase[guid], Constants.Models.BlackListBrowser);
+        if allPlayers[guid].banned then
+            addPlayer(allPlayers[guid], Constants.Models.BlackListBrowser);
         else
-            addPlayer(globalDatabase[guid], Constants.Models.TableBrowser);
+            addPlayer(allPlayers[guid], Constants.Models.TableBrowser);
         end
     end
 end
@@ -171,9 +179,4 @@ function init()
     clearTables();
     initTables();
 end
-
-init();
-
-
-
 

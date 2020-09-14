@@ -116,7 +116,7 @@
         <!-- Black list ends -->
 
         <!-- Add Button Start -->
-        <Button name="AddButton" text="Add" inherits="UIPanelButtonTemplate" state="disabled">
+        <Button name="AddButton" text="Ban" inherits="UIPanelButtonTemplate" state="disabled">
             <Size>
                 <RelDimension x="0.06" y="0.02"/>
             </Size>
@@ -135,7 +135,7 @@
             </Scripts>
         </Button>
         <!-- Add Button End -->
-         <Button name="RemoveButton" text="Remove" inherits="UIPanelButtonTemplate">
+         <Button name="RemoveButton" text="Unban" inherits="UIPanelButtonTemplate">
             <Size>
                 <RelDimension x="0.06" y="0.02"/>
             </Size>

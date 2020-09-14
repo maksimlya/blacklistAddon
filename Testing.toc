@@ -3,7 +3,7 @@
 ## Notes: 1ST ADDON
 ## Author: Me
 ## Version: 0.0.1
-## SavedVariables: Mine
+## SavedVariables: globalDatabase
 
 utils\Constants.lua
 interface.xml
