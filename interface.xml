@@ -34,14 +34,6 @@
     </Button>
 
 
-  <Button name="BrowserEntry" virtual="true" inherits="UIPanelButtonTemplate">
-    <Size>
-        <RelDimension x="0.06" y="0.02"/>
-    </Size>
-    <Anchors>
-        <Anchor point="CENTER"/>
-    </Anchors>
-</Button>
   <Frame name="MyModMainFrame" parent="UIParent" movable="true" enableMouse="true">
     <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true"
     edgeFile="Interface\DialogFrame\UI-DialogBox-Border">
@@ -76,13 +68,25 @@
         </OnDragStop>
     </Scripts>
     <Frames>
+  
+        
         <!-- Party picker start -->
         <Frame name="TableBrowser">
+          <Layers>
+            <Layer>
+                <FontString name="PartyHeader" text="Party" justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalLarge">
+                    <Size x="200" y="100" />
+                        <Anchors>
+                            <Anchor point="CENTER" y="38"/>
+                        </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
             <Size>
-                <RelDimension x="0.15" y="0.25"/>
+                <RelDimension x="0.15" y="0.092"/>
             </Size>
             <Anchors>
-                <Anchor point="TOP" y="-20"/>
+                <Anchor point="TOP" y="-30"/>
                 <Anchor point="LEFT" x="20"/>
             </Anchors>
             <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
@@ -95,13 +99,54 @@
             </Backdrop>
         </Frame>
         <!-- Party picker ends -->
-        <!-- Black list start -->
-        <Frame name="BlackListBrowser" parent="MyModMainFrame">
+
+        <!-- Recents picker start -->
+        <Frame name="RecentsBrowser">
+          <Layers>
+            <Layer>
+                <FontString name="RecentHeader" text="Recent" justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalLarge">
+                    <Size x="200" y="100" />
+                        <Anchors>
+                            <Anchor point="CENTER" y="95"/>
+                        </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
             <Size>
-                <RelDimension x="0.15" y="0.25"/>
+                <RelDimension x="0.15" y="0.167"/>
             </Size>
             <Anchors>
-                <Anchor point="TOP" y="-20"/>
+                <Anchor point="TOP" y="-192"/>
+                <Anchor point="LEFT" x="20"/>
+            </Anchors>
+            <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                <EdgeSize>
+                    <AbsValue val="16"/>
+                </EdgeSize>
+                <TileSize>
+                    <AbsValue val="16"/>
+                </TileSize>
+            </Backdrop>
+        </Frame>
+        <!-- Party picker ends -->
+
+        <!-- Black list start -->
+        <Frame name="BlackListBrowser" parent="MyModMainFrame">
+            <Layers>
+                <Layer>
+                    <FontString name="BlackListHeader" text="Black List" justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalLarge">
+                        <Size x="200" y="100" />
+                            <Anchors>
+                                <Anchor point="CENTER" y="157"/>
+                            </Anchors>
+                    </FontString>
+                </Layer>
+             </Layers>
+            <Size>
+                <RelDimension x="0.15" y="0.245"/>
+            </Size>
+            <Anchors>
+                <Anchor point="TOP" y="-30"/>
                 <Anchor point="RIGHT" x="-20"/>
             </Anchors>
             <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
@@ -116,7 +161,7 @@
         <!-- Black list ends -->
 
         <!-- Add Button Start -->
-        <Button name="AddButton" text="Ban" inherits="UIPanelButtonTemplate" state="disabled">
+        <Button name="AddButton" text="Ban" inherits="UIPanelButtonTemplate">
             <Size>
                 <RelDimension x="0.06" y="0.02"/>
             </Size>
@@ -153,11 +198,7 @@
                 </OnClick>
             </Scripts>
         </Button>
-        <Button name="$customName" text="Custom" inherits="BrowserEntry" id="1">
-            <Anchors>
-                <Anchor point="TOP" y="-200"/>
-            </Anchors>
-        </Button>
+ 
         <!-- Close Button Start -->
         <Button name="$parentTestButton" text="Close Window" inherits="UIPanelButtonTemplate">
             <Size>
@@ -165,6 +206,7 @@
             </Size>
             <Anchors>
                 <Anchor point="BOTTOM" y="20"/>
+                <Anchor point="RIGHT" x="-60"/>
             </Anchors>
             <Scripts>
                 <OnLoad>

@@ -24,8 +24,8 @@ local createPlayer = function(guid)
         server = GetRealmName();
     end
 
-    local mock = InitPlayer(id, guid, name, locClass, server);
-    local player = UpdatePlayerToModel(mock);
+    local dbPlayer = InitPlayer(guid, name, locClass, server);
+    local player = UpdatePlayerToModel(id, dbPlayer);
 
     id = id + 1;
 
@@ -142,19 +142,20 @@ end
 
 local initTables = function()
 
-    -- Add myself 
-    local myGuid = UnitGUID('player');
-    if globalDatabase[myGuid] == nil then
-        createPlayer(myGuid);
-    else if allPlayers[myGuid] == nil then
-            allPlayers[myGuid] = UpdatePlayerToModel(globalDatabase[myGuid])
-        end
-    end
-    if allPlayers[myGuid].banned then
-        addPlayer(allPlayers[myGuid], Constants.Models.BlackListBrowser);
-    else
-        addPlayer(allPlayers[myGuid], Constants.Models.TableBrowser);
-    end
+    -- -- Add myself 
+    -- local myGuid = UnitGUID('player');
+    -- if globalDatabase[myGuid] == nil then
+    --     createPlayer(myGuid);
+    -- else if allPlayers[myGuid] == nil then
+    --         allPlayers[myGuid] = UpdatePlayerToModel(id, globalDatabase[myGuid])
+    --         id = id + 1;
+    --     end
+    -- end
+    -- if allPlayers[myGuid].banned then
+    --     addPlayer(allPlayers[myGuid], Constants.Models.BlackListBrowser);
+    -- else
+    --     addPlayer(allPlayers[myGuid], Constants.Models.TableBrowser);
+    -- end
 
     -- Add party members
     local currentPartyMembers = getPartyMembers();
@@ -163,7 +164,8 @@ local initTables = function()
         if globalDatabase[guid] == nil then
             createPlayer(guid);
             else if allPlayers[guid] == nil then
-                allPlayers[guid] = UpdatePlayerToModel(globalDatabase[guid])
+                allPlayers[guid] = UpdatePlayerToModel(id, globalDatabase[guid])
+                id = id + 1;
             end
         end
         if allPlayers[guid].banned then
@@ -178,5 +180,30 @@ end
 function init() 
     clearTables();
     initTables();
+    addMocks();
 end
 
+
+
+
+
+
+-- Testing functions
+
+function addMocks()
+    for guid, obj in pairs(globalDatabase) do
+        print(id);
+        print(obj.name);
+        if allPlayers[guid] == nil then
+            allPlayers[guid] = UpdatePlayerToModel(id, globalDatabase[guid]);
+            id = id + 1;
+        end
+        if allPlayers[guid].id < 5 then
+            if allPlayers[guid].banned then
+                addPlayer(allPlayers[guid], Constants.Models.BlackListBrowser);
+            else
+                addPlayer(allPlayers[guid], Constants.Models.TableBrowser);
+            end
+        end    
+    end
+end

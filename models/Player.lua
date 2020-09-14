@@ -1,7 +1,6 @@
-function InitPlayer(id, guid, name, class, server)
+function InitPlayer(guid, name, class, server)
     local self = {};
 
-    self.id = id;
     self.guid = guid;
     self.name = name;
     self.class = class;
@@ -25,22 +24,22 @@ local initPlayerFunctions = function(self)
     end
 end
 
-function UpdatePlayerToModel(player)
-    local self = CreateFrame("Button", player.name..player.id, nil, "TableEntry");
-    self:SetID(player.id);
+function UpdatePlayerToModel(id, dbPlayer)
+    local self = CreateFrame("Button", dbPlayer.name..id, nil, "TableEntry");
+    self:SetID(id);
     self:SetWidth(Constants.UI.TableEntry.Width);
     self:SetHeight(Constants.UI.TableEntry.Height);
-    self.bg = getglobal(player.name..player.id.."BG");
-    self.text = getglobal(player.name..player.id.."Name");
-    self.text:SetText(player.name..'-'..player.server);
-    self.text:SetTextColor(Constants.ClassColors[player.class][1], Constants.ClassColors[player.class][2], Constants.ClassColors[player.class][3], 1);
+    self.bg = getglobal(dbPlayer.name..id.."BG");
+    self.text = getglobal(dbPlayer.name..id.."Name");
+    self.text:SetText(dbPlayer.name..'-'..dbPlayer.server);
+    self.text:SetTextColor(Constants.ClassColors[dbPlayer.class][1], Constants.ClassColors[dbPlayer.class][2], Constants.ClassColors[dbPlayer.class][3], 1);
     
-    self.id = player.id;
-    self.guid = player.guid;
-    self.name = player.name;
-    self.class = player.class;
-    self.server = player.server;
-    self.banned = player.banned;
+    self.id = id;
+    self.guid = dbPlayer.guid;
+    self.name = dbPlayer.name;
+    self.class = dbPlayer.class;
+    self.server = dbPlayer.server;
+    self.banned = dbPlayer.banned;
 
     initPlayerFunctions(self);
     
