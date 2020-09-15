@@ -1,5 +1,4 @@
 local selected = -1;
-local id = 1;
 allPlayers = {};
 entries = {};
 banned = {};
@@ -25,11 +24,10 @@ local createPlayer = function(guid)
     end
 
     local dbPlayer = InitPlayer(guid, name, locClass, server);
-    local player = UpdatePlayerToModel(id, dbPlayer);
+    local player = UpdatePlayerToModel(dbPlayer);
 
-    id = id + 1;
 
-    globalDatabase[guid] = mock;
+    globalDatabase[guid] = dbPlayer;
     allPlayers[guid] = player;
 end
 
@@ -164,8 +162,7 @@ local initTables = function()
         if globalDatabase[guid] == nil then
             createPlayer(guid);
             else if allPlayers[guid] == nil then
-                allPlayers[guid] = UpdatePlayerToModel(id, globalDatabase[guid])
-                id = id + 1;
+                allPlayers[guid] = UpdatePlayerToModel(globalDatabase[guid])
             end
         end
         if allPlayers[guid].banned then
@@ -192,11 +189,9 @@ end
 
 function addMocks()
     for guid, obj in pairs(globalDatabase) do
-        print(id);
         print(obj.name);
         if allPlayers[guid] == nil then
-            allPlayers[guid] = UpdatePlayerToModel(id, globalDatabase[guid]);
-            id = id + 1;
+            allPlayers[guid] = UpdatePlayerToModel(globalDatabase[guid]);
         end
         if allPlayers[guid].id < 5 then
             if allPlayers[guid].banned then

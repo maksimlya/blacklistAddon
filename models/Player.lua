@@ -1,3 +1,5 @@
+local id = 1;
+
 function InitPlayer(guid, name, class, server)
     local self = {};
 
@@ -24,7 +26,7 @@ local initPlayerFunctions = function(self)
     end
 end
 
-function UpdatePlayerToModel(id, dbPlayer)
+function UpdatePlayerToModel(dbPlayer)
     local self = CreateFrame("Button", dbPlayer.name..id, nil, "TableEntry");
     self:SetID(id);
     self:SetWidth(Constants.UI.TableEntry.Width);
@@ -43,6 +45,7 @@ function UpdatePlayerToModel(id, dbPlayer)
 
     initPlayerFunctions(self);
     
+    id = id + 1;
     return self;
 end
 
