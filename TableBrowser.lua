@@ -152,6 +152,28 @@ function Left(entry)
    entry.bg:Hide();
 end
 
+local sortByName = function (type)
+    table.sort(banned, function(v1, v2)
+        if type == "asc" then
+            return v1.name > v2.name
+        else
+            return v1.name < v2.name
+        end
+    end)
+    UpdateTables();
+end
+
+local sortByClass = function (type)
+    table.sort(banned, function(v1, v2)
+        if type == "asc" then
+            return v1.class > v2.class
+        else
+            return v1.class < v2.class
+        end
+    end)
+    UpdateTables();
+end
+
 
 -- Wipe tables -- TODO (redunant? performance hit?)
 local clearTables = function() 
