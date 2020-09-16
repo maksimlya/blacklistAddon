@@ -1,7 +1,29 @@
-local selected = -1;
+selected = -1;
 allPlayers = {};
 entries = {};
 banned = {};
+recents = {};
+
+-- Returns GUIDs of party members.
+local getPartyMembers = function()
+    local existingMembers = {};
+    for i=1,4,1 do
+        if(UnitInParty('party'..i)) then
+            existingMembers[i] = UnitGUID('party'..i);
+        end
+    end
+    return existingMembers;
+end
+
+-- Returns true if the given GUID in party.
+local function isInParty(guid)
+    local currentPartyMembers = getPartyMembers();
+    if currentPartyMembers[guid] == nil then
+        return false;
+    else 
+        return true;
+    end
+end
 
 local UpdateTables = function()
      local idx = 1;
@@ -12,6 +34,11 @@ local UpdateTables = function()
      idx = 1;
      for i,entry in pairs(banned) do
         entry.Update(BlackListBrowser, idx);
+        idx = idx + 1;
+     end
+     idx = 1;
+     for i,entry in pairs(recents) do
+        entry.Update(RecentsBrowser, idx);
         idx = idx + 1;
      end
 end
@@ -47,10 +74,14 @@ end
 banPlayer = function()
     local entry = entries[selected];
     if entry == nil then
-        return
+        entry = recents[selected];
     end
-    allPlayers[entries[selected].guid].Edit('banned', true);
+    if entry == nil then
+        return;
+    end
+    allPlayers[entry.guid].Edit('banned', true);
     entries[selected] = nil;
+    recents[selected] = nil;
     banned[selected] = entry;
     selected = -1;
 
@@ -64,7 +95,13 @@ unBanPlayer = function()
     end
     allPlayers[banned[selected].guid].Edit('banned', false);
     banned[selected] = nil;
-    entries[selected] = entry;
+
+    if isInParty(entry.guid) then
+        entries[selected] = entry;
+    else
+        recents[selected] = entry;
+    end
+    
     selected = -1;
 
     UpdateTables();
@@ -85,7 +122,7 @@ function SelectEntry(entry)
     selected = entry.id; 
 
     -- Enable/Disable add/remove buttons.
-    if entries[selected] then
+    if entries[selected] or recents[selected] then
         getglobal("AddButton"):Enable();
         getglobal("RemoveButton"):Disable();
     end
@@ -115,16 +152,6 @@ function Left(entry)
    entry.bg:Hide();
 end
 
--- Returns GUIDs of party members.
-local getPartyMembers = function()
-    local existingMembers = {};
-    for i=1,4,1 do
-        if(UnitInParty('party'..i)) then
-            existingMembers[i] = UnitGUID('party'..i);
-        end
-    end
-    return existingMembers;
-end
 
 -- Wipe tables -- TODO (redunant? performance hit?)
 local clearTables = function() 
@@ -138,23 +165,9 @@ local clearTables = function()
      end
 end
 
+
+
 local initTables = function()
-
-    -- -- Add myself 
-    -- local myGuid = UnitGUID('player');
-    -- if globalDatabase[myGuid] == nil then
-    --     createPlayer(myGuid);
-    -- else if allPlayers[myGuid] == nil then
-    --         allPlayers[myGuid] = UpdatePlayerToModel(id, globalDatabase[myGuid])
-    --         id = id + 1;
-    --     end
-    -- end
-    -- if allPlayers[myGuid].banned then
-    --     addPlayer(allPlayers[myGuid], Constants.Models.BlackListBrowser);
-    -- else
-    --     addPlayer(allPlayers[myGuid], Constants.Models.TableBrowser);
-    -- end
-
     -- Add party members
     local currentPartyMembers = getPartyMembers();
     
@@ -189,16 +202,17 @@ end
 
 function addMocks()
     for guid, obj in pairs(globalDatabase) do
-        print(obj.name);
-        if allPlayers[guid] == nil then
-            allPlayers[guid] = UpdatePlayerToModel(globalDatabase[guid]);
-        end
-        if allPlayers[guid].id < 5 then
-            if allPlayers[guid].banned then
-                addPlayer(allPlayers[guid], Constants.Models.BlackListBrowser);
-            else
-                addPlayer(allPlayers[guid], Constants.Models.TableBrowser);
+        if obj.banned then
+            if allPlayers[guid] == nil then
+                allPlayers[guid] = UpdatePlayerToModel(globalDatabase[guid]);
             end
+            addPlayer(allPlayers[guid], Constants.Models.BlackListBrowser);
         end    
+    end
+end
+
+function banAll()
+    for guid, obj in pairs(globalDatabase) do
+        obj.banned = true;
     end
 end
