@@ -101,7 +101,7 @@
         <!-- Party picker ends -->
 
         <!-- Recents picker start -->
-        <Frame name="RecentsBrowser">
+        <Frame name="RecentsBrowserFrame">
           <Layers>
             <Layer>
                 <FontString name="RecentHeader" text="Recent" justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalLarge">
@@ -128,7 +128,29 @@
                 </TileSize>
             </Backdrop>
         </Frame>
-        <!-- Party picker ends -->
+        <ScrollFrame name="ScrollRecentsFrame" inherits="UIPanelScrollFrameTemplate">
+            <Size>
+                <RelDimension x="0.15" y="0.15"/>
+            </Size>
+            <Anchors>
+                <Anchor point="LEFT" x="17"/>
+                 <Anchor point="TOP" y="-205"/>
+            </Anchors>
+            <ScrollChild>    
+                <Frame name="RecentsBrowser" parent="MyModMainFrame">
+                    <Size>
+                        <AbsDimension x="240" y="200"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOP" y="-30"/>
+                        <Anchor point="LEFT" x="-20"/>
+                    </Anchors>
+
+                </Frame>
+            </ScrollChild>
+       
+        </ScrollFrame>
+        <!-- Recents picker ends -->
 
   <!-- Black list start -->
 
@@ -173,7 +195,7 @@
             <ScrollChild>    
                 <Frame name="BlackListBrowser" parent="MyModMainFrame">
                     <Size>
-                        <AbsDimension x="240" y="380"/>
+                        <AbsDimension x="240" y="100"/>
                     </Size>
                     <Anchors>
                         <Anchor point="TOP" y="-30"/>
