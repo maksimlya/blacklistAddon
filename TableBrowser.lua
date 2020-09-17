@@ -3,13 +3,16 @@ allPlayers = {};
 entries = {};
 banned = {};
 recents = {};
+local sortBy = 'name';
+local sortDirection = 'asc'
 
 -- Returns GUIDs of party members.
 local getPartyMembers = function()
     local existingMembers = {};
     for i=1,4,1 do
         if(UnitInParty('party'..i)) then
-            existingMembers[i] = UnitGUID('party'..i);
+            local guid = UnitGUID('party'..i);
+            existingMembers[guid] = guid;
         end
     end
     return existingMembers;
@@ -27,17 +30,17 @@ end
 
 local UpdateTables = function()
      local idx = 1;
-     for i,entry in pairs(entries) do
+     for i,entry in pairsByKeys(entries, sortBy, sortDirection) do
         entry.Update(TableBrowser, idx);
         idx = idx + 1;
      end
      idx = 1;
-     for i,entry in pairs(banned) do
+     for i,entry in pairsByKeys(banned, sortBy, sortDirection) do
         entry.Update(BlackListBrowser, idx);
         idx = idx + 1;
      end
      idx = 1;
-     for i,entry in pairs(recents) do
+     for i,entry in pairsByKeys(recents, sortBy, sortDirection) do
         entry.Update(RecentsBrowser, idx);
         idx = idx + 1;
      end
@@ -62,13 +65,24 @@ end
 local addPlayer = function(player, where)
 
     if where == Constants.Models.TableBrowser then
-        entries[player.id] = player;
+        entries[player.guid] = player;
     else if where == Constants.Models.BlackListBrowser then
-        banned[player.id] = player
+        banned[player.guid] = player
         end
     end
     
     UpdateTables(); 
+end
+
+testForBanned = function()
+    local partyMembers = getPartyMembers();
+    for i, guid in pairs(partyMembers) do
+        print(guid);
+        if banned[guid] ~= nil then
+            message('Player '..banned[guid].name..' is in your black list!!!');
+            PlaySound(SOUNDKIT.READY_CHECK, 'master', true);
+        end
+    end
 end
 
 banPlayer = function()
@@ -79,6 +93,7 @@ banPlayer = function()
     if entry == nil then
         return;
     end
+    
     allPlayers[entry.guid].Edit('banned', true);
     entries[selected] = nil;
     recents[selected] = nil;
@@ -119,7 +134,7 @@ function SelectEntry(entry)
         banned[selected].bg:Hide();
     end
 
-    selected = entry.id; 
+    selected = entry.guid; 
 
     -- Enable/Disable add/remove buttons.
     if entries[selected] or recents[selected] then
@@ -134,7 +149,7 @@ end
 
 
 function IsSelected(entry)
-    if selected == entry.id then 
+    if selected == entry.guid then 
         return true 
     else 
         return false
@@ -143,7 +158,7 @@ end
 
 -- Background flash on mouse over.
 function Entered(entry)
-    if selected ~= entry.id then
+    if selected ~= entry.guid then
         entry.bg:SetColorTexture(0.7,0.7,0.5,0.15);
     end
     entry.bg:Show();
@@ -152,25 +167,37 @@ function Left(entry)
    entry.bg:Hide();
 end
 
-local sortByName = function (type)
-    table.sort(banned, function(v1, v2)
-        if type == "asc" then
-            return v1.name > v2.name
+function pairsByKeys (data, field, direction)
+    local a = {}
+    for guid, player in pairs(data) do table.insert(a, player) end
+    table.sort(a, function(v1,v2)
+        if direction == 'asc'then
+            return v1[field] < v2[field];
         else
-            return v1.name < v2.name
+            return v1[field] > v2[field];
         end
     end)
-    UpdateTables();
-end
+     
+    local i = 0      -- iterator variable
+    local iter = function ()   -- iterator function
+      i = i + 1
+      if a[i] == nil then return nil
+      else return a[i], data[a[i].guid]
+      end
+    end
+    return iter
+  end
 
-local sortByClass = function (type)
-    table.sort(banned, function(v1, v2)
-        if type == "asc" then
-            return v1.class > v2.class
-        else
-            return v1.class < v2.class
+sortByProp = function(sortProp)
+    if sortBy == sortProp then
+        if sortDirection == 'asc' then
+            sortDirection = 'desc';
+        else 
+            sortDirection = 'asc';
         end
-    end)
+    else
+        sortBy = sortProp;
+    end
     UpdateTables();
 end
 
@@ -178,12 +205,12 @@ end
 -- Wipe tables -- TODO (redunant? performance hit?)
 local clearTables = function() 
     for i,entry in pairs(entries) do
-        entries[i]:Hide();
-        entries[i] = nil;
+        entry:Hide();
+        entry = nil;
      end
      for i,entry in pairs(banned) do
-        banned[i]:Hide();
-        banned[i] = nil;
+        entry:Hide();
+        entry = nil;
      end
 end
 
