@@ -14,8 +14,9 @@ end
 
 local initPlayerFunctions = function(self)
     self.Update = function(parent, idx)
+        self:ClearAllPoints();
         self:SetParent(parent);
-        self:SetPoint("TOP", 0, (-(idx-1) * Constants.UI.TableEntry.Height)-5);
+        self:SetPoint("TOP", 0, (-(idx-1) * Constants.UI.TableEntry.Height)-2 * idx);
         self.bg:Hide();
         self:Show();
     end

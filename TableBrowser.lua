@@ -18,6 +18,23 @@ local getPartyMembers = function()
     return existingMembers;
 end
 
+checkMissingPartyPlayer = function()
+    local existingMembers = getPartyMembers();
+
+    for guid, player in pairs(entries) do
+        if existingMembers[guid] == nil then
+            recents[guid] = player;
+            entries[guid] = nil;
+        end
+    end
+
+    for i, guid in pairs(existingMembers) do
+        entries[guid] = allPlayers[guid];
+        recents[guid] = nil;
+    end
+    UpdateTables();
+end
+
 -- Returns true if the given GUID in party.
 local function isInParty(guid)
     local currentPartyMembers = getPartyMembers();
@@ -28,7 +45,7 @@ local function isInParty(guid)
     end
 end
 
-local UpdateTables = function()
+UpdateTables = function()
      local idx = 1;
      for i,entry in pairsByKeys(entries, sortBy, sortDirection) do
         entry.Update(TableBrowser, idx);
@@ -69,15 +86,12 @@ local addPlayer = function(player, where)
     else if where == Constants.Models.BlackListBrowser then
         banned[player.guid] = player
         end
-    end
-    
-    UpdateTables(); 
+    end 
 end
 
 testForBanned = function()
     local partyMembers = getPartyMembers();
     for i, guid in pairs(partyMembers) do
-        print(guid);
         if banned[guid] ~= nil then
             message('Player '..banned[guid].name..' is in your black list!!!');
             PlaySound(SOUNDKIT.READY_CHECK, 'master', true);
@@ -106,9 +120,9 @@ end
 unBanPlayer = function()
     local entry = banned[selected];
     if entry == nil then
-        return
+        return;
     end
-    allPlayers[banned[selected].guid].Edit('banned', false);
+    allPlayers[entry.guid].Edit('banned', false);
     banned[selected] = nil;
 
     if isInParty(entry.guid) then
@@ -188,7 +202,7 @@ function pairsByKeys (data, field, direction)
     return iter
   end
 
-sortByProp = function(sortProp)
+SortByProp = function(sortProp)
     if sortBy == sortProp then
         if sortDirection == 'asc' then
             sortDirection = 'desc';
@@ -203,7 +217,7 @@ end
 
 
 -- Wipe tables -- TODO (redunant? performance hit?)
-local clearTables = function() 
+clearTables = function() 
     for i,entry in pairs(entries) do
         entry:Hide();
         entry = nil;
@@ -240,9 +254,47 @@ function init()
     clearTables();
     initTables();
     addMocks();
+    UpdateTables();
 end
 
 
+
+-- UI Functions
+
+function calcDistance(x1, y1, x2, y2)
+    return math.sqrt((x2-x1)^2 + (y2-y1)^2);
+end
+
+function MoveEntity(entity) 
+    SelectEntry(entity);
+    entity:SetParent(MyModMainFrame);
+    --entity:SetMovable(true)
+
+    entity:StartMoving();
+    -- entity:SetScript("OnDragStart", entity.StartMoving)
+    -- entity:SetScript("OnDragStop", entity.StopMovingOrSizing)
+end
+
+function StopEntity(entity) 
+    entity:StopMovingOrSizing();
+
+    local recentScale = RecentsBrowser:GetEffectiveScale();
+    local blacklistScale = BlackListBrowser:GetEffectiveScale();
+    local recentX, recentY = RecentsBrowser:GetCenter();
+    local blackX, blackY = BlackListBrowser:GetCenter();
+    local x, y = GetCursorPosition();
+    
+
+    local distanceToBlacklist = calcDistance(x, y, blackX*blacklistScale, blackY*blacklistScale);
+    local distanceToRecents = calcDistance(x, y, recentX*recentScale, recentY*recentScale);
+
+    if(distanceToBlacklist < distanceToRecents) then
+        banPlayer(entity);
+    else 
+        unBanPlayer(entity);
+    end
+
+end
 
 
 
@@ -264,4 +316,16 @@ function banAll()
     for guid, obj in pairs(globalDatabase) do
         obj.banned = true;
     end
+end
+
+function checkPosition()
+    local x, y = GetCursorPosition();
+    print('cursor x '..x);
+    print('cursor y'..y);
+    local scale = BlackListFrame:GetEffectiveScale();
+    local frameX, frameY = BlackListFrame:GetCenter() * BlackListFrame:GetEffectiveScale();
+
+
+    print('frame x '..frameX*scale);
+    print('frame y'..frameY*scale);
 end

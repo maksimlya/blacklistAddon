@@ -1,7 +1,17 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Script file="models/Player.lua"/>
-    <Button name="TableEntry" hidden="true" virtual="true">
+    <Button name="TableEntry" hidden="true" virtual="true" movable="true">
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true"
+        edgeFile="Interface\DialogFrame\UI-DialogBox-Border">
+            <TileSize>
+                <AbsValue val="6"/>
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="6"/>
+            </EdgeSize>
+
+        </Backdrop>
         <Layers>
             <Layer>
                 <FontString name="$parentName" justifyH="LEFT" inherits="GameFontNormalLarge">
@@ -15,6 +25,7 @@
         <Scripts>
             <OnLoad>
                 getglobal(self:GetName().."BG"):Hide();
+                <!-- self:RegisterForDrag("LeftButton"); -->
             </OnLoad>
             <OnEnter>
                 Entered(self);
@@ -27,6 +38,12 @@
             <OnClick>
                 SelectEntry(self);
             </OnClick>
+            <!-- <OnDragStart>
+                MoveEntity(self);
+            </OnDragStart>
+            <OnDragStop>
+               StopEntity(self);
+            </OnDragStop> -->
         </Scripts>
         <NormalTexture name="$parentBG">
             <Color r="0.7" g="0.7" b="0.5" a="0.25"/>
@@ -58,7 +75,7 @@
             self:RegisterForDrag("LeftButton");
         </OnLoad>
         <OnShow>
-            init();
+            UpdateTables();
         </OnShow>
         <OnDragStart>
             self:StartMoving();
@@ -171,7 +188,7 @@
             </Size>
             <Anchors>
                 <Anchor point="TOP" y="-30"/>
-                <Anchor point="RIGHT" x="-24"/>
+                <Anchor point="RIGHT" x="-27.5"/>
             </Anchors>
             <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
                 <EdgeSize>
@@ -245,6 +262,63 @@
                 </OnClick>
             </Scripts>
         </Button>
+
+        <Frame name="SortingFrame">
+            <Layers>
+                <Layer>
+                    <FontString name="SortingHeader" text="Sort" justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalLarge">
+                        <Size x="200" y="100" />
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                                <Anchor point="TOP"/>
+                            </Anchors>
+                    </FontString>
+                </Layer>
+            </Layers>
+            <Size>
+                <RelDimension x="0.1" y="0.1"/>
+            </Size>
+            <Anchors>
+                <Anchor point="BOTTOM"/>
+                <Anchor point="CENTER"/>
+            </Anchors>
+            <Frames>
+                <Button name="SortName" text="Name" inherits="UIPanelButtonTemplate">
+                    <Size>
+                        <RelDimension x="0.05" y="0.015"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOP" y="-20"/>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                    <Scripts>
+                        <OnLoad>
+                            self:RegisterForClicks("LeftButtonUp");
+                        </OnLoad> 
+                        <OnClick>
+                            SortByProp('name');
+                        </OnClick>
+                    </Scripts>
+                </Button>
+                <Button name="SortClass" text="Class" inherits="UIPanelButtonTemplate">
+                    <Size>
+                        <RelDimension x="0.05" y="0.015"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOP" y="-45"/>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                    <Scripts>
+                        <OnLoad>
+                            self:RegisterForClicks("LeftButtonUp");
+                        </OnLoad> 
+                        <OnClick>
+                            SortByProp('class');
+                        </OnClick>
+                    </Scripts>
+                </Button>
+        </Frames>
+        </Frame>
  
         <!-- Close Button Start -->
         <Button name="$parentTestButton" text="Close Window" inherits="UIPanelButtonTemplate">

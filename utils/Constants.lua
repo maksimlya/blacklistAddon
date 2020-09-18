@@ -19,7 +19,7 @@ Constants = {
             Width = 0.15
         },
         TableEntry = {
-            Height = 33,
+            Height = 40,
             Width = (UIParent:GetWidth() * 0.15) - 8
         }
     },

@@ -7,6 +7,7 @@ end
 local function OnEvent(self, event, arg1, arg2 )
     if event == "GROUP_ROSTER_UPDATE" then
         init();
+        checkMissingPartyPlayer();
         testForBanned();
     end
     if event == "ADDON_LOADED" and arg1 == "Testing" then
