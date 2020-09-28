@@ -6,6 +6,24 @@ recents = {};
 local sortBy = 'name';
 local sortDirection = 'asc'
 
+function showPopup(guid)
+    StaticPopupDialogs["BAN"] = {
+        text = "Reason for ban",
+        button1 = 'Ban',
+        button2 = "Cancel",
+        hasEditBox = true,
+        OnAccept = function(self)
+            banPlayer(self.editBox:GetText());
+        end,
+        OnCancel = function()
+            selected = -1;
+            UpdateTables();
+        end
+    }
+
+    StaticPopup_Show("BAN");
+end
+
 -- Returns GUIDs of party members.
 local getPartyMembers = function()
     local existingMembers = {};
@@ -22,7 +40,7 @@ checkMissingPartyPlayer = function()
     local existingMembers = getPartyMembers();
 
     for guid, player in pairs(entries) do
-        if existingMembers[guid] == nil then
+        if existingMembers[guid] == nil and banned[guid] == nil then
             recents[guid] = player;
             entries[guid] = nil;
         end
@@ -93,13 +111,32 @@ testForBanned = function()
     local partyMembers = getPartyMembers();
     for i, guid in pairs(partyMembers) do
         if banned[guid] ~= nil then
-            message('Player '..banned[guid].name..' is in your black list!!!');
+            local msg;
+            if globalDatabase[guid].reason ~= "" then
+                msg = 'Player '..banned[guid].name..' is in your black list for a reason: "'..globalDatabase[guid].reason..'"'
+            else
+                msg = 'Player '..banned[guid].name..' is in your black list!'
+            end
+            StaticPopupDialogs["BANED"] = {
+                text = msg,
+                button1 = 'Inform Party',
+                button2 = 'Ignore',
+                button3 = 'Leave Party',
+                OnAlt = function()
+                    LeaveParty();
+                end,
+                OnAccept = function()
+                    SendChatMessage("[Blacklist Addon] The player "..banned[guid].name..' located in my blacklist for a reason: "'..globalDatabase[guid].reason..'". I suggest to get rid of him so it wouldn\'t ruin our run. Thanks!.' ,"PARTY");
+                end
+            }
+        
+            StaticPopup_Show("BANED");
             PlaySound(SOUNDKIT.READY_CHECK, 'master', true);
         end
     end
 end
 
-banPlayer = function()
+banPlayer = function(reason)
     local entry = entries[selected];
     if entry == nil then
         entry = recents[selected];
@@ -109,6 +146,9 @@ banPlayer = function()
     end
     
     allPlayers[entry.guid].Edit('banned', true);
+    if reason ~= nil then
+        allPlayers[entry.guid].Edit('reason', reason);
+    end
     entries[selected] = nil;
     recents[selected] = nil;
     banned[selected] = entry;
@@ -123,6 +163,7 @@ unBanPlayer = function()
         return;
     end
     allPlayers[entry.guid].Edit('banned', false);
+    allPlayers[entry.guid].Edit('reason', nil);
     banned[selected] = nil;
 
     if isInParty(entry.guid) then

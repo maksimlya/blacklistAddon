@@ -238,7 +238,7 @@
                     self:Disable();
                 </OnLoad>
                 <OnClick>
-                   banPlayer();
+                   showPopup();
                    self:Disable();
                 </OnClick>
             </Scripts>
